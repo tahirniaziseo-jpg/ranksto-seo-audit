@@ -50,6 +50,7 @@ CONFIG_DIR = os.environ.get(
 )
 CLIENT_SECRET = os.path.join(CONFIG_DIR, "client_secret.json")
 TOKEN = os.path.join(CONFIG_DIR, "token.json")
+SERVICE_ACCOUNT = os.path.join(CONFIG_DIR, "service_account.json")
 UA = "free-seo-audit/1.0 (+https://github.com)"
 
 AI_SOURCES = (
@@ -76,6 +77,14 @@ def credentials(interactive=True):
     from google.oauth2.credentials import Credentials
     from google_auth_oauthlib.flow import InstalledAppFlow
 
+    # Option 1: service account key (no consent screen, no test users, no 7-day expiry).
+    # Add the service account's email as a user in Search Console and GA4 (read access).
+    sa = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS") or SERVICE_ACCOUNT
+    if os.path.exists(sa):
+        from google.oauth2 import service_account
+        return service_account.Credentials.from_service_account_file(sa, scopes=SCOPES)
+
+    # Option 2: OAuth desktop client (sign in as yourself).
     creds = None
     if os.path.exists(TOKEN):
         creds = Credentials.from_authorized_user_file(TOKEN, SCOPES)
@@ -558,8 +567,12 @@ def main(argv=None):
     a = ap.parse_args(argv)
 
     if a.cmd == "auth":
-        credentials(interactive=True)
-        print(f"Signed in. Token saved to {TOKEN}")
+        c = credentials(interactive=True)
+        if hasattr(c, "service_account_email"):
+            print(f"Using service account {c.service_account_email}\n"
+                  "Make sure this email is added as a user in Search Console and GA4.")
+        else:
+            print(f"Signed in. Token saved to {TOKEN}")
     elif a.cmd == "sites":
         print(json.dumps(gsc_sites(), indent=2))
     elif a.cmd == "ga4-properties":
