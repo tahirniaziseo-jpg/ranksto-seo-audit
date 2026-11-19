@@ -31,8 +31,10 @@ Built and maintained by **[Ranksto](https://ranksto.com)**, an SEO agency for te
 
 ## Three ways to feed it data (pick one)
 
-1. **Google APIs (recommended):** a one-time, roughly 10-minute setup with your own free
-   Google Cloud OAuth client. Read-only access, and the token stays on your computer.
+1. **Google APIs (recommended):** a one-time, roughly 10-minute setup in your own free
+   Google Cloud project. Easiest is a **service account**: a read-only "robot" user you add
+   to Search Console and GA4. It needs no consent screen and never expires, and clients can
+   grant it access to their sites. Signing in with OAuth also works.
    → [docs/SETUP.md](docs/SETUP.md)
 2. **CSV export (zero setup):** export *Queries* and *Pages* from Search Console for two
    periods and hand Claude the files.

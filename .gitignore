@@ -1,6 +1,8 @@
 # Never commit credentials or client data
 client_secret*.json
 token.json
+service_account*.json
+*.iam.gserviceaccount.com*.json
 .config/
 audit-*/
 findings.json
