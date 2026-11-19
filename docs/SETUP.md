@@ -1,11 +1,20 @@
 # One-time setup (free, ~10 minutes)
 
 The audit reads your data straight from Google's own APIs. Google does not charge for these
-APIs at audit-sized volumes. You only need a Google Cloud project with an OAuth client so
-the script can ask *you* for read-only permission.
+APIs at audit-sized volumes. You need a free Google Cloud project and **one** of two ways
+to sign in:
 
-> No credit card is required. Google Cloud may offer a "free trial" banner — you can ignore
-> it; these APIs work without billing enabled.
+| | **A. Service account (recommended)** | **B. OAuth sign-in** |
+|---|---|---|
+| What it is | A "robot" Google account you add as a read-only user | You sign in as yourself in the browser |
+| Consent screen / test users | Not needed | Needed |
+| Expires | Never (until you delete the key) | Every 7 days in *Testing* mode |
+| Works for clients' sites | Yes, the client adds the robot email as a user | Only sites your own account can see |
+
+> No credit card is required. Google Cloud may show a "free trial" banner; you can ignore
+> it. These APIs work without billing enabled.
+
+Do steps 1–2, then **either** section A **or** steps 3–5 (B).
 
 ## 1. Create a Google Cloud project
 
@@ -22,7 +31,36 @@ Open each link (with the new project selected) and press **Enable**:
 - Google Analytics Admin API — <https://console.cloud.google.com/apis/library/analyticsadmin.googleapis.com>
 - PageSpeed Insights API (optional) — <https://console.cloud.google.com/apis/library/pagespeedonline.googleapis.com>
 
-## 3. Configure the consent screen
+## A. Service account (recommended)
+
+1. **IAM & Admin → Service accounts → Create service account**. Name it `seo-audit-reader`,
+   press **Create and continue**, then **Done**. No project roles are needed.
+2. Open the new service account → **Keys → Add key → Create new key → JSON → Create**.
+   A `.json` file downloads.
+3. Save it as:
+   - macOS / Linux: `~/.config/free-seo-audit/service_account.json`
+   - Windows: `C:\Users\<you>\.config\free-seo-audit\service_account.json`
+
+   (Or point `GOOGLE_APPLICATION_CREDENTIALS` at it.) Never commit or share this file.
+4. Copy the service account's email (`seo-audit-reader@<project-id>.iam.gserviceaccount.com`)
+   and give it read access:
+   - **Search Console** → your property → **Settings → Users and permissions → Add user**
+     → paste the email → permission **Restricted** → **Add**.
+   - **GA4** → **Admin → Property access management → + → Add users** → paste the email →
+     role **Viewer** → untick "Notify new users by email" → **Add**.
+5. Check it:
+
+```bash
+pip install -r requirements.txt
+python skills/free-seo-audit/scripts/fetch.py sites
+python skills/free-seo-audit/scripts/fetch.py ga4-properties
+```
+
+When a `service_account.json` file exists, the scripts use it automatically. Skip to step 6.
+
+## B. OAuth sign-in
+
+### 3. Configure the consent screen
 
 1. **APIs & Services → OAuth consent screen** (called "Google Auth Platform" in newer consoles).
 2. User type **External** → fill in app name (`free-seo-audit`), your email for support and
@@ -30,7 +68,7 @@ Open each link (with the new project selected) and press **Enable**:
 3. **Audience / Test users** → **Add users** → add your own Google account.
    Leaving the app in *Testing* mode is fine and keeps it private to you.
 
-## 4. Create the OAuth client
+### 4. Create the OAuth client
 
 1. **APIs & Services → Credentials → Create credentials → OAuth client ID**.
 2. Application type **Desktop app** → name `free-seo-audit` → **Create**.
@@ -40,7 +78,7 @@ Open each link (with the new project selected) and press **Enable**:
 
    (Or set the `FREE_SEO_AUDIT_HOME` environment variable to another folder.)
 
-## 5. Install and sign in
+### 5. Install and sign in
 
 ```bash
 pip install -r requirements.txt
