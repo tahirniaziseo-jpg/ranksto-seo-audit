@@ -1,0 +1,9 @@
+{
+  "name": "ranksto-seo-audit",
+  "description": "Free SEO audit from your own Google Search Console + GA4 data: indexation, decaying pages, CTR anomalies, striking distance, cannibalization, Core Web Vitals, on-page and AI-search checks. No paid connector.",
+  "version": "1.0.0",
+  "author": { "name": "Tahir Niazi", "url": "https://ranksto.com" },
+  "homepage": "https://ranksto.com",
+  "license": "MIT",
+  "keywords": ["seo", "seo-audit", "search-console", "ga4", "core-web-vitals", "free"]
+}
