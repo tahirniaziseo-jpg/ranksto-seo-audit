@@ -18,12 +18,13 @@ Check in this order and use the first that works. Tell the user which one you ar
 
 | Path | Needs | Coverage |
 |---|---|---|
-| **A. Google APIs** (best) | `pip install google-api-python-client google-auth-oauthlib`, a free OAuth client (`docs/SETUP.md`), one-time `python scripts/fetch.py auth` | Everything below |
+| **A. Google APIs** (best) | `pip install google-api-python-client google-auth-oauthlib`, plus either a free service-account key added as a read-only user in Search Console + GA4 (recommended), or an OAuth client with a one-time `python scripts/fetch.py auth` (`docs/SETUP.md`) | Everything below |
 | **B. CSV export** (zero setup) | User exports Search Console → Performance → Queries and Pages as CSV for two periods | Steps 3–4 except cannibalization; steps 6–8 still run (public checks) |
 | **C. Browser** | Claude in Chrome or another browser tool, user signed in to Search Console / GA4 | Read the same reports from the UI; slower, use for small sites |
 
-Path A check: `python scripts/fetch.py sites`. If it says "Not signed in" or the client file
-is missing, walk the user through `docs/SETUP.md` (≈10 minutes, once) or offer path B/C.
+Path A check: `python scripts/fetch.py sites`. An empty list `[]` with a service account
+means the robot email has not been added to the property yet; tell the user which email to
+add. If it says "Not signed in" or the client file is missing, walk the user through `docs/SETUP.md` (≈10 minutes, once) or offer path B/C.
 
 ## Workflow
 
