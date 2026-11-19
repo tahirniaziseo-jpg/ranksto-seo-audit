@@ -1,0 +1,12 @@
+# Never commit credentials or client data
+client_secret*.json
+token.json
+.config/
+audit-*/
+findings.json
+REPORT.md
+!examples/**
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
